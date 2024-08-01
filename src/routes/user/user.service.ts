@@ -54,4 +54,8 @@ export class UserService {
       throw new PreconditionFailedException('There is not  user with this id.')
     }
   }
+
+  async getById(userId: string) {
+    return await this.prismaService.user.findFirst({ where: { id: userId} })
+  }
 }
