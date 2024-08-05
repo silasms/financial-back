@@ -7,6 +7,7 @@ import { TokenModule } from 'src/service/token/token.module';
 @Module({
   providers: [UserService],
   controllers: [UserController],
-  imports: [PrismaModule, TokenModule]
+  imports: [PrismaModule, TokenModule],
+  exports: [UserService]
 })
 export class UserModule {}
