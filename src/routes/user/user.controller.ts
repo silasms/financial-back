@@ -1,9 +1,10 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginBodyDTO } from './dto/login-body.dto';
 import { CreateUserBodyDTO } from './dto/create-user-body.dto';
 import { EditUserBodyDTO } from './dto/edit-user-body.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { DecodeTokenBodyDTO } from './dto/decode-token-body.dto';
 
 @Controller('user')
 export class UserController {
@@ -20,8 +21,20 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
+  @Post('tokendecode')
+  async decodeToken(@Body() body: DecodeTokenBodyDTO) {
+    return await this.userService.decodeToken(body)
+  }
+
+  @UseGuards(AuthGuard)
   @Patch('edit')
   async edit(@Body() body: EditUserBodyDTO) {
     return await this.userService.editUser(body)
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  async deleteById(@Param('id') id: string) {
+    return await this.userService
   }
 }

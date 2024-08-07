@@ -6,6 +6,7 @@ import { uuidv7 } from 'uuidv7';
 import { CreateUserBodyDTO } from './dto/create-user-body.dto';
 import { LoginBodyDTO } from './dto/login-body.dto';
 import { EditUserBodyDTO } from './dto/edit-user-body.dto';
+import { DecodeTokenBodyDTO } from './dto/decode-token-body.dto';
 
 @Injectable()
 export class UserService {
@@ -28,6 +29,10 @@ export class UserService {
     return user
   }
 
+  async decodeToken({ token }: DecodeTokenBodyDTO) {
+    return await this.tokenService.decodeToken(token)
+  }
+
   async login({ email, password }: LoginBodyDTO) {
     const user = await this.prismaService.user.findFirst({ where: { email } })
     if (!user) throw new UnauthorizedException('Invalid email or password.')
@@ -47,7 +52,7 @@ export class UserService {
         },
         data: {
           name,
-          password
+          password: String(await hash(password))
         }
       })
     } catch(err) {
@@ -57,5 +62,9 @@ export class UserService {
 
   async getById(userId: string) {
     return await this.prismaService.user.findFirst({ where: { id: userId} })
+  }
+
+  async deleteById(id: string) {
+    return await this.prismaService.user.delete({ where: { id }})
   }
 }

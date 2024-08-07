@@ -41,4 +41,8 @@ export class MovementService {
       }
     })
   }
+
+  async deleteById(id: string) {
+    return await this.prismaService.movement.delete({ where: { id } })
+  }
 }
