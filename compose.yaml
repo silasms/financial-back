@@ -3,18 +3,31 @@ version: "3"
 services:
   postgres:
     image: postgres
+    restart: always
     environment:
-      POSTGRES_PASSWORD: "123456"
-      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: root
+      POSTGRES_DB: prisma
     ports:
       - "5432:5432"
+    command: -p 5432
+    networks:
+      - kukac-networks
   nodejs:
     build: .
     image: nodejs:20.10.0
     container_name: nodejs
-    env_file: .env
     environment:
-      - DATABASE_URL=$DATABASE_URL
+      - DATABASE_URL=postgres://root:123456@postgres:5432/prisma?schema=public
+      - SECRET=SECRET
     ports: ["3000:3000"]
     volumes:
       - .:/home/node/app
+    depends_on:
+      - postgres
+    networks:
+      - kukac-networks
+networks:
+  kukac-networks:
+    driver: bridge
+  
